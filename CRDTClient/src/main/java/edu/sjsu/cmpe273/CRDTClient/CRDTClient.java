@@ -79,26 +79,10 @@ public class CRDTClient {
 			System.out.println("Deleting...");
 			this.countDownLatch = new CountDownLatch(serverWrittenList.size());
 			for (final DistributedCacheService cacheServer : serverWrittenList) {
-				Future<HttpResponse<JsonNode>> future = Unirest.get(cacheServer.getCacheServerUrl() + "/cache/{key}")
-						.header("accept", "application/json")
-						.routeParam("key", Long.toString(key))
-						.asJsonAsync(new Callback<JsonNode>() {
 
-							public void failed(UnirestException e) {
-								System.out.println("Delete failed..."+cacheServer.getCacheServerUrl());
-								countDownLatch.countDown();
-							}
+                cacheServer.remove(key);
+                System.out.println("Deleted resouce with key: "+key+" from : "+cacheServer.getCacheServerUrl());
 
-							public void completed(HttpResponse<JsonNode> response) {
-								System.out.println("Delete is successful "+cacheServer.getCacheServerUrl());
-								countDownLatch.countDown();
-							}
-
-							public void cancelled() {
-								System.out.println("The request is cancelled...");
-								countDownLatch.countDown();
-							}
-					});
 			}
 			this.countDownLatch.await(3, TimeUnit.SECONDS);
 			Unirest.shutdown();

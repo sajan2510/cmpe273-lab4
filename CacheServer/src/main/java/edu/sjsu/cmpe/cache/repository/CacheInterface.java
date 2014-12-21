@@ -37,4 +37,13 @@ public interface CacheInterface {
      */
     List<Entry> getAll();
 
+    /**
+     * Retrieve an existing entry by key
+     *
+     * @param key
+     *            a valid key
+     * @return a entry instance
+     */
+    void remove(Long key);
+
 }
